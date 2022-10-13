@@ -24,9 +24,20 @@ io.on("connection", (socket) => {
   //send message
   socket.on("send-message", (data) => {
     const { receiverId } = data;
+    data.seen = false;
     const user = activeUsers.find((user) => user.userId === receiverId);
     if (user) {
       io.to(user.socketId).emit("recieve-message", data);
+    }
+  });
+
+  //notification
+  socket.on("send-notification", (data) => {
+    const { userId } = data;
+    const user = activeUsers.find((user) => user.userId === userId);
+
+    if (user) {
+      io.to(user.socketId).emit("receive-notification", data);
     }
   });
 
